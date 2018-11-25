@@ -1,0 +1,5 @@
+{
+  "python.pythonPath": "/home/viktor/.local/share/virtualenvs/plask-LngfK1yQ/bin/python",
+  "python.linting.pylintEnabled": false,
+  "python.linting.enabled": true
+}
