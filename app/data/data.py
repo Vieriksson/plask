@@ -27,11 +27,11 @@ members = [Member(1,
                   "Bredus Bandus Fixus",
                   "G Dizzle, my Nizzle."),
            Member(4,
-                  "Tyson",
-                  "Muscle and brains",
-                  "A man with huge biceps, a well functioning brain"
+                  "Mr T",
+                  "Ekerös Göran Kropp",
+                  "A man with the perfect beard, a well functioning brain"
                   " and an interest for boring stuff like hiking and"
-                  " Fjällräven-pants"
-                  " is hard to find. But Riksdawgen did it!")]
+                  " Fjällräven-pants is hard to find."
+                  " But Riksdawgen did it!")]
 
 users = [User(1, "Vieriksson")]
