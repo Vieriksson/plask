@@ -36,6 +36,24 @@ def select_member(conn, id):
     return row
 
 
+def add_member(conn, member):
+    c = conn.cursor()
+    query = '''INSERT INTO members(name, title, description)
+                    VALUES('%s', '%s', '%s')''' % (
+            member.name, member.title, member.description)
+    c.execute(query)
+    conn.commit()
+
+
+def update_member(conn, id, member):
+    c = conn.cursor()
+    query = """UPDATE members
+    SET name='%s', title='%s', description='%s'
+    WHERE id='%s'""" % (member.name, member.title, member.description, id)
+    c.execute(query)
+    conn.commit()
+
+
 def select_users(conn):
     cur = conn.cursor()
     cur.execute("SELECT * FROM users")
@@ -46,17 +64,19 @@ def select_users(conn):
 def create_tables(conn):
     c = conn.cursor()
     c.execute('''CREATE TABLE members
-             (id integer, name text, title text, description text)''')
+             (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, title TEXT
+             , description TEXT)''')
     c.execute('''CREATE TABLE users
-             (id integer, username text)''')
+             (id INTEGER, username TEXT)''')
     conn.commit()
 
 
 def populate_with_test_members(conn):
     c = conn.cursor()
     for member in data.members:
-        query = "INSERT INTO members VALUES (%d, '%s', '%s', '%s')" % (
-            member.id, member.name, member.title, member.description)
+        query = '''INSERT INTO members(name, title, description)
+                    VALUES('%s', '%s', '%s')''' % (
+            member.name, member.title, member.description)
         c.execute(query)
     conn.commit()
 

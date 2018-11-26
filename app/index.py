@@ -1,12 +1,14 @@
 
 
+from sqlite3 import Error
+
 import jwt
-from flask import Flask, jsonify, session
+from flask import Flask, jsonify, request, session
 
 from database import db
 from errors import http_error
 from middlewares import auth, logger
-from utils import config
+from utils import config, converters
 
 app = Flask(__name__)
 app.secret_key = 'secret-session-key'
@@ -46,7 +48,7 @@ def get_user():
         filter(lambda user: user['id'] == session['id'], users.users))
 
     if _users:
-        return jsonify(_users.pop())
+        return success(_users.pop())
     else:
         return not_found()
 
@@ -58,7 +60,7 @@ def get_members():
         with conn:
             members = db.select_members(conn)
 
-        return jsonify(members)
+        return success(members)
     except TypeError as error:
         return internal_error(str(error))
 
@@ -70,7 +72,7 @@ def get_member(id):
         member = db.select_member(conn, id)
 
     if member:
-        return jsonify(member)
+        return success(member)
 
     else:
         return not_found()
@@ -79,15 +81,36 @@ def get_member(id):
 @app.route('/members', methods=['POST'])
 @auth.require_api_token
 def add_member():
-    return ""
+    member = converters.Dict2Obj(request.json)
+    try:
+        with conn:
+            db.add_member(conn, member)
+    except Error as error:
+        return internal_error(str(error))
+    return success()
 
 
 @app.route('/members/<id>', methods=['PUT'])
 @auth.require_api_token
-def update_member():
-    return ""
+def update_member(id):
+    member = converters.Dict2Obj(request.json)
+    try:
+        with conn:
+            db.update_member(conn, id, member)
+    except Error as error:
+        return internal_error(str(error))
+    return success()
 
 # Error handling
+
+
+def success(result=None):
+    if result:
+        response = jsonify(result)
+    else:
+        response = jsonify({"success": True})
+    response.status_code = 200
+    return response
 
 
 @app.errorhandler(401)
